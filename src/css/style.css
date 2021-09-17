@@ -1,0 +1,129 @@
+* {
+  box-sizing: border-box;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 800px;
+  min-height: 800px;
+  border: 10px solid lightgrey;
+  border-radius: 10px;
+  background: url(../img/back.png);
+  background-size: 100%;
+}
+
+.chat-field {
+  position: absolute;
+  padding: 15px;
+  top: 25px;
+  right: 25px;
+  max-width: 550px;
+  min-width: 550px;
+  min-height: 530px;
+  max-height: 530px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.chat-content {
+  margin-bottom: 15px;
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 450px;
+  max-height: 450px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.chat-input {
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+  height: 30px;
+  border-radius: 10px;
+  border: 2px solid gray;
+  padding-left: 10px;
+  outline: none;
+}
+
+.users {
+  position: absolute;
+  padding: 10px;
+  top: 75px;
+  left: 25px;
+  max-width: 300px;
+  min-width: 300px;
+  min-height: 300px;
+  max-height: 300px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.hide {
+  display: none;
+}
+
+.create-user {
+  position: fixed;
+  padding: 25px;
+  top: 250px;
+  left: 150px;
+  width: 500px;
+  height: 250px;
+  border: 2px solid grey;
+  background-color: white;
+}
+
+.input-nic-name {
+  font: inherit;
+  height: 40px;
+}
+
+h3 {
+  color: grey;
+  text-align: center;
+}
+
+.btn {
+  width: 250px;
+  height: 40px;
+  margin-top: 25px;
+  margin-left: 100px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.my-nic {
+  color: red;
+}
+
+.nic-list-item {
+  margin-bottom: 5px;
+}
+
+.message-item {
+  margin-bottom: 20px;
+}
+
+.message-nic {
+  margin-bottom: 5px;
+  font-size: 80%;
+}
+
+.my-message-container {
+  text-align: right;
+}
+
+.users,
+.chat-content {
+  overflow-y: auto;
+}
+
+.existed-user {
+  color: red;
+  text-align: center;
+}
