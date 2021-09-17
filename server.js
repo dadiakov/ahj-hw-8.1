@@ -36,7 +36,7 @@ wsServer.on('connection', (ws) => {
       if (messages.some(e => e.nicName === user)) {
         ws.send(JSON.stringify({ hasUser: 'exist'}));
       } else {
-        messages.push({ nicName : user, text : `${user} присоединился к чату`, time : getCurrentTime()});
+        messages.push({ nicName : user, text : `${user} присоединился к чату `, time : getCurrentTime()});
         ws.send(JSON.stringify({ hasUser: 'not-exist'}));
         
 
