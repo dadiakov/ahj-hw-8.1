@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prestart": "npm install",
-    "start": "nodemon ./server.js localhost 7070 --watch",
+    "start": "nodemon ./server.js",
     "devserv": "webpack-dev-server --mode development",
     "build": "webpack --mode production",
     "lint": "eslint .",
