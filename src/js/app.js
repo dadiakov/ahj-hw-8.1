@@ -137,47 +137,30 @@ ws.addEventListener('message', (evt) => {
 
   if (subData.hasOwnProperty('hasUser')) {
     if (subData.hasUser === 'exist') {
-      console.log('Пользователь существует');
       document.querySelector('.existed-user').classList.remove('hide');
       return;
     }
-    console.log('Пользователь не существует');
     document.querySelector('.create-user').classList.add('hide');
     document.querySelector('.input-chat-text').classList.remove('hide');
-    // console.log(subData)
     return;
   }
   // Одиночные сообщения
   if (subData.message && (typeof subData.message !== 'object')) {
     const subDataMessage = JSON.parse(subData.message);
     chat.renderMessage(subDataMessage);
-    console.log('я тут');
-    // console.log(subData)
-
     return;
   }
 
   // Первичная загрузка + регистрация
   if (subData.message) {
-    console.log('я теперь я здесь');
-    console.log(subData);
-    console.log(new Map(subData.arrayMap));
     chat.renderNicNames(new Map(subData.arrayMap).get(chat.userID));
-    // let ID = subData.message[0].userID;
-    // let nicName = subData.message[0].nicName;
-    // users.set(ID, nicName);
-    // console.log(users)
-    // chat.renderNicNames(users.get(ID));
     subData.message.forEach((e) => {
       chat.renderMessage(e);
     });
-    console.log(subData);
     document.querySelector('.users').innerHTML = '';
     subData.userList.forEach((e) => {
       chat.renderNicNames(e[1]);
     });
-    // const sorted = subData.message.reduce((unique, item) => (unique.includes(item.nicName) ? unique : [...unique, item.nicName]), []);
-    // sorted.forEach((e) => chat.renderNicNames(e));
   }
 });
 

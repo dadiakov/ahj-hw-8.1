@@ -28,7 +28,6 @@ wsServer.on('connection', (ws) => {
   let id = 0;
   const errCallback = (e) => { console.log(e); };
 
-
   ws.on('message', (e) => {
 
     if (e === 'allData') {
@@ -55,7 +54,6 @@ wsServer.on('connection', (ws) => {
         Array.from(wsServer.clients)
         .filter(client => client.readyState === WS.OPEN)
         .forEach(client => client.send(JSON.stringify({ message: [{ userID, nicName : user, text : `${user} присоединился к чату`, time : getCurrentTime()}], userList : arrayMap}), errCallback));
-
       }
       return;
     }
