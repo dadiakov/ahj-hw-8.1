@@ -11,52 +11,10 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 
-const ws = new WebSocket('wss://dadiakov-ahj-hw81.herokuapp.com//wss');
-
-ws.addEventListener('open', () => {
-  console.log('connected');
-  chat.renderAllData();
-});
-
-ws.addEventListener('message', (evt) => {
-  const { data } = evt;
-  const subData = JSON.parse(data);
-  if (subData.hasOwnProperty('hasUser')) {
-    if (subData.hasUser === 'exist') {
-      console.log('Пользователь существует');
-      document.querySelector('.existed-user').classList.remove('hide');
-      return;
-    }
-    console.log('Пользователь не существует');
-    document.querySelector('.create-user').classList.add('hide');
-    document.querySelector('.input-chat-text').classList.remove('hide');
-    return;
-  }
-
-  if (subData.message && (typeof subData.message !== 'object')) {
-    const subDataMessage = JSON.parse(subData.message);
-    chat.renderMessage(subDataMessage);
-
-    return;
-  }
-  if (subData.message) {
-    subData.message.forEach((e) => {
-      chat.renderMessage(e);
-    });
-    const sorted = subData.message.reduce((unique, item) => (unique.includes(item.nicName) ? unique : [...unique, item.nicName]), []);
-    sorted.forEach((e) => chat.renderNicNames(e));
-  }
-});
-
-ws.addEventListener('close', (evt) => {
-  console.log('connection closed', evt);
-});
-
-ws.addEventListener('error', () => {
-  console.log('error');
-});
-
 let nicName = '';
+const { v4: uuidv4 } = require('uuid');
+
+const users = new Map();
 
 class Chat {
   constructor(element) {
@@ -84,7 +42,8 @@ class Chat {
     this.nicName = document.querySelector('.input-nic-name').value;
     nicName = this.nicName;
 
-    ws.send(JSON.stringify({ checkUser: this.nicName }));
+    ws.send(JSON.stringify({ checkUser: this.nicName, userID: chat.userID }));
+
     document.querySelector('.input-nic-name').value = '';
   }
 
@@ -92,7 +51,9 @@ class Chat {
     e.preventDefault();
     const { value } = document.querySelector('.chat-input');
     const time = getCurrentTime();
-    const data = { nicName, text: value, time };
+    const data = {
+      userID: chat.userID, nicName, text: value, time,
+    };
     ws.send(JSON.stringify(data));
     document.querySelector('.chat-input').value = '';
   }
@@ -138,8 +99,6 @@ class Chat {
   }
 }
 
-const chat = new Chat('.container');
-
 function getCurrentTime() {
   const now = new Date();
   const year = now.getFullYear();
@@ -152,3 +111,80 @@ function getCurrentTime() {
   if (minutes < 10) minutes = `${0}${minutes}`;
   return `${day}.${month}.${year} ${hour}:${minutes}`;
 }
+
+const chat = new Chat('.container');
+chat.userID = uuidv4();
+
+const ws = new WebSocket('wss://dadiakov-ahj-hw81.herokuapp.com//wss');
+
+ws.addEventListener('open', () => {
+  console.log('connected');
+  chat.renderAllData();
+});
+
+ws.addEventListener('message', (evt) => {
+  const { data } = evt;
+
+  const subData = JSON.parse(data);
+
+  if (subData.hasOwnProperty('subject')) {
+    document.querySelector('.users').innerHTML = '';
+    subData.userList.forEach((e) => {
+      chat.renderNicNames(e[1]);
+    });
+    return;
+  }
+
+  if (subData.hasOwnProperty('hasUser')) {
+    if (subData.hasUser === 'exist') {
+      console.log('Пользователь существует');
+      document.querySelector('.existed-user').classList.remove('hide');
+      return;
+    }
+    console.log('Пользователь не существует');
+    document.querySelector('.create-user').classList.add('hide');
+    document.querySelector('.input-chat-text').classList.remove('hide');
+    // console.log(subData)
+    return;
+  }
+  // Одиночные сообщения
+  if (subData.message && (typeof subData.message !== 'object')) {
+    const subDataMessage = JSON.parse(subData.message);
+    chat.renderMessage(subDataMessage);
+    console.log('я тут');
+    // console.log(subData)
+
+    return;
+  }
+
+  // Первичная загрузка + регистрация
+  if (subData.message) {
+    console.log('я теперь я здесь');
+    console.log(subData);
+    console.log(new Map(subData.arrayMap));
+    chat.renderNicNames(new Map(subData.arrayMap).get(chat.userID));
+    // let ID = subData.message[0].userID;
+    // let nicName = subData.message[0].nicName;
+    // users.set(ID, nicName);
+    // console.log(users)
+    // chat.renderNicNames(users.get(ID));
+    subData.message.forEach((e) => {
+      chat.renderMessage(e);
+    });
+    console.log(subData);
+    document.querySelector('.users').innerHTML = '';
+    subData.userList.forEach((e) => {
+      chat.renderNicNames(e[1]);
+    });
+    // const sorted = subData.message.reduce((unique, item) => (unique.includes(item.nicName) ? unique : [...unique, item.nicName]), []);
+    // sorted.forEach((e) => chat.renderNicNames(e));
+  }
+});
+
+ws.addEventListener('close', (evt) => {
+  console.log('connection closed', evt);
+});
+
+ws.addEventListener('error', () => {
+  console.log('error');
+});

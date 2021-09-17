@@ -19,30 +19,42 @@ const port = process.env.PORT || 7070;
 const server = http.createServer(app.callback());
 const wsServer = new WS.Server({ server });
 
-const messages = [{ nicName: 'Dima', text: 'Some text', time : getCurrentTime() }];
+const messages = [{ userID: 1, nicName: 'Dima', text: 'Some text', time : getCurrentTime() }];
+const users = new Map();
+
+users.set('1', 'Dima');
 
 wsServer.on('connection', (ws) => {
+  let id = 0;
   const errCallback = (e) => { console.log(e); };
+
 
   ws.on('message', (e) => {
 
     if (e === 'allData') {
-      ws.send(JSON.stringify({ message: messages }), errCallback);
+      let arrayMap = Array.from(users.entries());
+
+      ws.send(JSON.stringify({ message: messages , userList : arrayMap}), errCallback);
       return;
     }
 
     if (JSON.parse(e).hasOwnProperty('checkUser')) {
-      let user = (JSON.parse(e)).checkUser;
+     const user = (JSON.parse(e)).checkUser;
+     const userID = (JSON.parse(e)).userID;
       if (messages.some(e => e.nicName === user)) {
         ws.send(JSON.stringify({ hasUser: 'exist'}));
       } else {
-        messages.push({ nicName : user, text : `${user} присоединился к чату `, time : getCurrentTime()});
+        messages.push({ userID, nicName : user, text : `${user} присоединился к чату `, time : getCurrentTime()});
+        users.set(userID, user);
+        id = userID;
+
         ws.send(JSON.stringify({ hasUser: 'not-exist'}));
-        
+
+        let arrayMap = Array.from(users.entries());           
 
         Array.from(wsServer.clients)
         .filter(client => client.readyState === WS.OPEN)
-        .forEach(client => client.send(JSON.stringify({ message: [{ nicName : user, text : `${user} присоединился к чату`, time : getCurrentTime()}] }), errCallback));
+        .forEach(client => client.send(JSON.stringify({ message: [{ userID, nicName : user, text : `${user} присоединился к чату`, time : getCurrentTime()}], userList : arrayMap}), errCallback));
 
       }
       return;
@@ -50,11 +62,21 @@ wsServer.on('connection', (ws) => {
 
     messages.push(JSON.parse(e));
 
+    let arrayMap = Array.from(users.entries());
+
     Array.from(wsServer.clients)
       .filter(client => client.readyState === WS.OPEN)
-      .forEach(client => client.send(JSON.stringify({ message : e }), errCallback));
+      .forEach(client => client.send(JSON.stringify({ message : e , userList : arrayMap}), errCallback));
 
   });
+  ws.on('close', e => {
+    users.delete(id);
+    let arrayMap = Array.from(users.entries());
+    Array.from(wsServer.clients)
+    .filter(client => client.readyState === WS.OPEN)
+    .forEach(client => client.send(JSON.stringify({subject : 'Пользователь ушел', userList : arrayMap})));
+  })
+  
 });
 
 server.listen(port);
