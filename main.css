@@ -1,0 +1,130 @@
+* {
+  box-sizing: border-box;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.container {
+  position: relative;
+  width: 800px;
+  min-height: 800px;
+  border: 10px solid lightgrey;
+  border-radius: 10px;
+  background: url(data:image/png;base64,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);
+  background-size: 100%;
+}
+
+.chat-field {
+  position: absolute;
+  padding: 15px;
+  top: 25px;
+  right: 25px;
+  max-width: 550px;
+  min-width: 550px;
+  min-height: 530px;
+  max-height: 530px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.chat-content {
+  margin-bottom: 15px;
+  max-width: 100%;
+  min-width: 100%;
+  min-height: 450px;
+  max-height: 450px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.chat-input {
+  font-family: inherit;
+  font-size: inherit;
+  width: 100%;
+  height: 30px;
+  border-radius: 10px;
+  border: 2px solid gray;
+  padding-left: 10px;
+  outline: none;
+}
+
+.users {
+  position: absolute;
+  padding: 10px;
+  top: 75px;
+  left: 25px;
+  max-width: 300px;
+  min-width: 300px;
+  min-height: 300px;
+  max-height: 300px;
+  border: 2px solid gray;
+  border-radius: 10px;
+  background-color: white;
+}
+
+.hide {
+  display: none;
+}
+
+.create-user {
+  position: fixed;
+  padding: 25px;
+  top: 250px;
+  left: 150px;
+  width: 500px;
+  height: 250px;
+  border: 2px solid grey;
+  background-color: white;
+}
+
+.input-nic-name {
+  font: inherit;
+  height: 40px;
+}
+
+h3 {
+  color: grey;
+  text-align: center;
+}
+
+.btn {
+  width: 250px;
+  height: 40px;
+  margin-top: 25px;
+  margin-left: 100px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.my-nic {
+  color: red;
+}
+
+.nic-list-item {
+  margin-bottom: 5px;
+}
+
+.message-item {
+  margin-bottom: 20px;
+}
+
+.message-nic {
+  margin-bottom: 5px;
+  font-size: 80%;
+}
+
+.my-message-container {
+  text-align: right;
+}
+
+.users,
+.chat-content {
+  overflow-y: auto;
+}
+
+.existed-user {
+  color: red;
+  text-align: center;
+}
+
